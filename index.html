@@ -100,6 +100,141 @@
   .ornament::before { left: -8px; }
   .ornament::after { right: -8px; }
 
+  /* ===== Intro / Purpose ===== */
+  .intro {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 40px 40px 36px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .intro::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+  }
+  @media (max-width: 600px) {
+    .intro { padding: 28px 22px 24px; }
+  }
+  .intro-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .intro h2 {
+    font-family: "Shippori Mincho", serif;
+    font-weight: 600;
+    font-size: clamp(20px, 3.6vw, 26px);
+    margin: 0 0 20px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .intro h2 em {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent);
+    padding: 0 2px 2px;
+  }
+  .intro-lead {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.9;
+    max-width: 580px;
+    margin: 0 auto 28px;
+    text-align: left;
+  }
+  .intro-quote {
+    font-family: "Shippori Mincho", serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--bg-tint);
+    padding: 24px 28px 22px;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 24px auto;
+    text-align: left;
+    line-height: 1.95;
+    max-width: 580px;
+    font-style: normal;
+    quotes: none;
+  }
+  .intro-quote-attribution {
+    display: block;
+    margin-top: 12px;
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    text-align: right;
+    letter-spacing: 0.1em;
+  }
+  .intro-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 32px 0 0;
+  }
+  @media (max-width: 600px) {
+    .intro-steps { grid-template-columns: 1fr; gap: 8px; }
+  }
+  .intro-step {
+    text-align: center;
+    padding: 18px 14px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--line-soft);
+  }
+  .intro-step-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .intro-step-text {
+    font-family: "Shippori Mincho", serif;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .intro-step-arrow {
+    color: var(--ink-muted);
+    font-size: 16px;
+    align-self: center;
+    text-align: center;
+    margin: 0 -2px;
+  }
+  @media (max-width: 600px) {
+    .intro-step-arrow { display: none; }
+  }
+  .intro-closing {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-family: "Shippori Mincho", serif;
+    letter-spacing: 0.04em;
+    line-height: 1.9;
+  }
+  .intro-closing strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
   /* ===== Schedule Banner ===== */
   .schedule {
     background: var(--bg-tint);
@@ -561,6 +696,45 @@
     <p class="subtitle">作業ゼロへ。本来取り組むべき最重要課題に、時間を使う。</p>
     <div class="ornament"></div>
   </header>
+
+  <!-- Introduction / Purpose -->
+  <section class="intro">
+    <div class="intro-eyebrow">この取り組みについて</div>
+    <h2>「効率化」ではなく、<em>なくす</em>。</h2>
+
+    <p class="intro-lead">
+      今年度、私たちは AI ツール「Claude」を全員で使い始めます。<br>
+      目的は「効率化」ではありません。繰り返している作業を <strong>「なくす・ゼロにする」</strong> ことで、本当に取り組みたかった最重要課題に時間を使えるようになることです。
+    </p>
+
+    <blockquote class="intro-quote">
+      AI は思考を働かせる道具。<br>
+      まず作業をゼロにし、情報を見えるようにし、<br>
+      本来の仕事で判断・行動できる組織をつくる。
+      <span class="intro-quote-attribution">— 社長の言葉</span>
+    </blockquote>
+
+    <div class="intro-steps">
+      <div class="intro-step">
+        <div class="intro-step-num">STEP 1</div>
+        <div class="intro-step-text">作業をゼロにする</div>
+      </div>
+      <div class="intro-step">
+        <div class="intro-step-num">STEP 2</div>
+        <div class="intro-step-text">情報を見えるようにする</div>
+      </div>
+      <div class="intro-step">
+        <div class="intro-step-num">STEP 3</div>
+        <div class="intro-step-text">最重要課題に取り組む</div>
+      </div>
+    </div>
+
+    <p class="intro-closing">
+      このシートは、その<strong>第一歩</strong>です。<br>
+      うまくいかなくて結構です。まず一つ、試してみてください。<br>
+      成功も失敗も、5月23日の定例会で全員と共有しましょう。
+    </p>
+  </section>
 
   <!-- Schedule -->
   <div class="schedule">
