@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提出一覧（管理画面）| マイ・プロジェクトシート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Noto+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F1;
+    --bg-tint: #F4EFE5;
+    --card: #FFFFFF;
+    --ink: #1F1B16;
+    --ink-soft: #4A443D;
+    --ink-muted: #8A8378;
+    --line: #E5DFD2;
+    --accent: #8B3A1F;
+    --accent-tint: #F2E4DA;
+    --green: #5C7A4F;
+    --shadow: 0 1px 2px rgba(31, 27, 22, 0.04), 0 4px 16px rgba(31, 27, 22, 0.05);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left h1 {
+    font-family: "Shippori Mincho", serif;
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0 0 4px;
+    letter-spacing: 0.02em;
+  }
+  .header-left .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header-right {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .user-badge {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-right: 8px;
+  }
+  .btn {
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--ink); color: white; border-color: var(--ink); }
+  .btn-primary:hover { background: var(--accent); border-color: var(--accent); color: white; }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 18px 20px;
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+  }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-family: "JetBrains Mono", monospace;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: "Shippori Mincho", serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .stat-value .unit { font-size: 14px; color: var(--ink-muted); margin-left: 4px; }
+
+  /* Filter */
+  .filter-bar {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+  }
+  .filter-bar input {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .filter-bar input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .filter-pill {
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: transparent;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .filter-pill.active {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  /* Table */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; min-width: 900px; }
+  th {
+    background: var(--bg-tint);
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+    font-family: "JetBrains Mono", monospace;
+    white-space: nowrap;
+  }
+  td {
+    padding: 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr.row-link { cursor: pointer; transition: background 0.1s; }
+  tr.row-link:hover { background: var(--bg-tint); }
+  .col-name { font-weight: 500; }
+  .col-dept { font-size: 12px; color: var(--ink-soft); }
+  .col-task { color: var(--ink-soft); max-width: 320px; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+  }
+  .badge-step12 { background: var(--accent-tint); color: var(--accent); }
+  .badge-step3 { background: #E8F0DD; color: var(--green); }
+
+  /* Detail modal */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 27, 22, 0.5);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 4px;
+    max-width: 760px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    border: 1px solid var(--line);
+  }
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-tint);
+    position: sticky;
+    top: 0;
+  }
+  .modal-head h2 {
+    font-family: "Shippori Mincho", serif;
+    font-size: 20px;
+    margin: 0;
+    font-weight: 600;
+  }
+  .modal-head .meta {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--ink); }
+
+  .modal-body { padding: 28px; }
+  .modal-section { margin-bottom: 32px; }
+  .modal-section-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .modal-section h3 {
+    font-family: "Shippori Mincho", serif;
+    font-size: 18px;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+  }
+  .modal-field { margin-bottom: 16px; }
+  .modal-field-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .modal-field-value {
+    color: var(--ink);
+    white-space: pre-wrap;
+    line-height: 1.7;
+    background: var(--bg-tint);
+    padding: 10px 14px;
+    border-radius: 4px;
+    border-left: 3px solid var(--accent);
+    font-size: 13.5px;
+  }
+  .modal-field-value:empty::before {
+    content: "（未記入）";
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .step1-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .step1-table th, .step1-table td {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+    background: white;
+    text-transform: none;
+    letter-spacing: normal;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .step1-table th {
+    background: var(--bg-tint);
+    color: var(--ink-muted);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .empty-state {
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--ink-muted);
+  }
+
+  /* Login screen */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .login-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 40px;
+    border-radius: 4px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: var(--shadow);
+  }
+  .login-box .login-eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .login-box h2 {
+    font-family: "Shippori Mincho", serif;
+    font-size: 22px;
+    margin: 0 0 8px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .login-box p { color: var(--ink-soft); font-size: 13px; margin: 0 0 24px; text-align: center; }
+  .login-box label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .login-box input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .login-box input:focus { outline: none; border-color: var(--accent); }
+  .login-box button {
+    width: 100%;
+    padding: 12px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .login-box button:hover { background: var(--accent); }
+  .login-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-error { color: var(--accent); font-size: 12px; margin-top: 12px; min-height: 18px; text-align: center; }
+
+  .hidden { display: none !important; }
+
+  @media print {
+    .filter-bar, .header-right, .modal-close, .stats { display: none; }
+    body { background: white; }
+    .table-wrap { border: none; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <div class="login-eyebrow">Admin</div>
+    <h2>管理画面</h2>
+    <p>マイ・プロジェクトシート 提出一覧</p>
+    <label>メールアドレス</label>
+    <input type="email" id="adminEmail" placeholder="admin@example.com">
+    <label>パスワード</label>
+    <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+    <button id="loginBtn" onclick="doLogin()">ログイン</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- Main view -->
+<div id="mainView" class="container hidden">
+  <div class="header">
+    <div class="header-left">
+      <div class="eyebrow">Admin · Submissions</div>
+      <h1>提出一覧</h1>
+      <div style="font-size: 12px; color: var(--ink-muted);">マイ・プロジェクトシート ／ 第2回定例会 2026年5月23日</div>
+    </div>
+    <div class="header-right">
+      <span class="user-badge" id="userBadge"></span>
+      <button class="btn" onclick="loadData()">🔄 再読込</button>
+      <button class="btn" onclick="exportCSV()">📤 CSV書き出し</button>
+      <button class="btn" onclick="window.print()">🖨️ 印刷</button>
+      <button class="btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">提出数</div>
+      <div class="stat-value" id="statTotal">-<span class="unit">件</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">STEP 0-2 完了</div>
+      <div class="stat-value" id="statStep12">-<span class="unit">件</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">STEP 3 完了</div>
+      <div class="stat-value" id="statStep3">-<span class="unit">件</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">削減時間（合計）</div>
+      <div class="stat-value" id="statMinutes">-<span class="unit">分/週</span></div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="🔍 氏名・所属・課題で検索..." oninput="renderTable()">
+    <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">すべて</button>
+    <button class="filter-pill" data-filter="step12" onclick="setFilter('step12')">STEP 0-2のみ</button>
+    <button class="filter-pill" data-filter="step3" onclick="setFilter('step3')">STEP 3完了</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>更新日時</th>
+          <th>氏名</th>
+          <th>所属</th>
+          <th>最重要課題</th>
+          <th>取り組む作業</th>
+          <th>状態</th>
+          <th>削減時間</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div id="emptyState" class="empty-state hidden">提出データがありません</div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2 id="modalName"></h2>
+        <div class="meta" id="modalMeta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // ============================================================
+  // Supabase 設定（README の手順で取得した値に書き換えてください）
+  // ============================================================
+  const SUPABASE_URL      = "https://boyscvllvlecqscficxj.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJveXNjdmxsdmxlY3FzY2ZpY3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNTU5MTUsImV4cCI6MjA5MjgzMTkxNX0.xV5yY_N4MATVxte3FBxBxRCjB9A7-H2fJSBlbM3bkmY";
+
+  const sb = (typeof supabase !== "undefined")
+    ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
+  let allData = [];
+  let currentFilter = "all";
+
+  // ============================================================
+  // 認証
+  // ============================================================
+  async function doLogin() {
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPass").value;
+    const errEl = document.getElementById("loginError");
+    const btn = document.getElementById("loginBtn");
+
+    if (!email || !password) {
+      errEl.textContent = "メールアドレスとパスワードを入力してください";
+      return;
+    }
+    if (!sb || SUPABASE_URL.includes("YOUR_")) {
+      errEl.textContent = "Supabaseが未設定です。admin.html の SUPABASE_URL / SUPABASE_ANON_KEY を確認してください。";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "ログイン中...";
+    errEl.textContent = "";
+
+    try {
+      const { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
+      if (error) throw error;
+      showMain(data.user);
+    } catch (err) {
+      errEl.textContent = "ログインに失敗しました：" + (err.message || err);
+      btn.disabled = false;
+      btn.textContent = "ログイン";
+    }
+  }
+
+  async function doLogout() {
+    if (sb) await sb.auth.signOut();
+    location.reload();
+  }
+
+  function showMain(user) {
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("mainView").classList.remove("hidden");
+    document.getElementById("userBadge").textContent = user ? user.email : "";
+    loadData();
+  }
+
+  async function checkSession() {
+    if (!sb) return;
+    const { data } = await sb.auth.getSession();
+    if (data.session) {
+      showMain(data.session.user);
+    }
+  }
+
+  // ============================================================
+  // データ読み込み
+  // ============================================================
+  async function loadData() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb
+        .from("submissions")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      allData = data || [];
+      renderTable();
+      renderStats();
+    } catch (err) {
+      alert("読み込みエラー: " + (err.message || err));
+    }
+  }
+
+  // ============================================================
+  // 統計
+  // ============================================================
+  function renderStats() {
+    document.getElementById("statTotal").innerHTML = allData.length + '<span class="unit">件</span>';
+    const step12 = allData.filter(function(d) { return d.step0 && d.step0.task && d.step2 && d.step2.task; }).length;
+    const step3 = allData.filter(function(d) { return d.step3 && d.step3.did; }).length;
+    document.getElementById("statStep12").innerHTML = step12 + '<span class="unit">件</span>';
+    document.getElementById("statStep3").innerHTML = step3 + '<span class="unit">件</span>';
+    const totalMin = allData.reduce(function(s, d) {
+      return s + (parseInt((d.step3 && d.step3.minutes) || 0) || 0);
+    }, 0);
+    document.getElementById("statMinutes").innerHTML = totalMin + '<span class="unit">分/週</span>';
+  }
+
+  // ============================================================
+  // テーブル描画
+  // ============================================================
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll(".filter-pill").forEach(function(p) {
+      p.classList.toggle("active", p.dataset.filter === f);
+    });
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("tableBody");
+    const search = document.getElementById("searchInput").value.toLowerCase();
+
+    let filtered = allData;
+    if (currentFilter === "step12") {
+      filtered = filtered.filter(function(d) { return !(d.step3 && d.step3.did); });
+    } else if (currentFilter === "step3") {
+      filtered = filtered.filter(function(d) { return d.step3 && d.step3.did; });
+    }
+    if (search) {
+      filtered = filtered.filter(function(d) {
+        return ((d.name || "") + " " + (d.department || "") + " " + ((d.step0 && d.step0.task) || "") + " " + ((d.step2 && d.step2.task) || ""))
+          .toLowerCase().includes(search);
+      });
+    }
+
+    tbody.innerHTML = "";
+    document.getElementById("emptyState").classList.toggle("hidden", filtered.length > 0);
+
+    filtered.forEach(function(d) {
+      const tr = document.createElement("tr");
+      tr.className = "row-link";
+      tr.addEventListener("click", function() { openModal(d); });
+      const updatedAt = d.updated_at
+        ? new Date(d.updated_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+        : "-";
+      const hasStep3 = d.step3 && d.step3.did;
+      const badge = hasStep3
+        ? '<span class="badge badge-step3">STEP 3 ✓</span>'
+        : '<span class="badge badge-step12">STEP 0-2</span>';
+      const minutes = (d.step3 && d.step3.minutes) ? "<strong>" + d.step3.minutes + "</strong> 分/週" : "<span style='color:var(--ink-muted)'>-</span>";
+
+      tr.innerHTML =
+        '<td style="font-family: \'JetBrains Mono\', monospace; font-size: 12px; color: var(--ink-muted);">' + updatedAt + '</td>' +
+        '<td class="col-name">' + escapeHtml(d.name || "") + '</td>' +
+        '<td class="col-dept">' + escapeHtml(d.department || "") + '</td>' +
+        '<td class="col-task">' + escapeHtml(truncate((d.step0 && d.step0.task) || "", 40)) + '</td>' +
+        '<td class="col-task">' + escapeHtml(truncate((d.step2 && d.step2.task) || "", 40)) + '</td>' +
+        '<td>' + badge + '</td>' +
+        '<td>' + minutes + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function truncate(s, n) {
+    if (!s) return "";
+    return s.length > n ? s.slice(0, n) + "…" : s;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // ============================================================
+  // 詳細モーダル
+  // ============================================================
+  function openModal(d) {
+    document.getElementById("modalName").textContent = d.name || "";
+    document.getElementById("modalMeta").textContent =
+      (d.department || "") + " ／ " + (d.email || "") + " ／ 提出: " + (d.submitted_at ? new Date(d.submitted_at).toLocaleString("ja-JP") : "-");
+
+    let html = "";
+
+    // STEP 0
+    html +=
+      '<div class="modal-section">' +
+      '<div class="modal-section-label">STEP 00</div>' +
+      '<h3>最重要課題</h3>' +
+      '<div class="modal-field"><div class="modal-field-label">本来取り組みたいこと</div><div class="modal-field-value">' + escapeHtml((d.step0 && d.step0.task) || "") + '</div></div>' +
+      '<div class="modal-field"><div class="modal-field-label">なぜ今まで取り組めていないか</div><div class="modal-field-value">' + escapeHtml((d.step0 && d.step0.why) || "") + '</div></div>' +
+      '<div class="modal-field"><div class="modal-field-label">時間が生まれたら、まず何をするか</div><div class="modal-field-value">' + escapeHtml((d.step0 && d.step0.first) || "") + '</div></div>' +
+      '</div>';
+
+    // STEP 1
+    if (d.step1 && d.step1.length) {
+      html += '<div class="modal-section"><div class="modal-section-label">STEP 01</div><h3>書き出した作業</h3>';
+      html += '<table class="step1-table"><thead><tr><th style="width:40px">#</th><th>作業の内容</th><th style="width:80px">頻度</th><th style="width:80px">自動化</th></tr></thead><tbody>';
+      d.step1.forEach(function(t, i) {
+        html += '<tr><td>' + (i+1) + '</td><td>' + escapeHtml(t.content || "") + '</td><td>' + escapeHtml(t.frequency || "") + '</td><td>' + escapeHtml(t.canAutomate || "") + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+
+    // STEP 2
+    html +=
+      '<div class="modal-section">' +
+      '<div class="modal-section-label">STEP 02</div>' +
+      '<h3>ゼロにする作業の設計</h3>' +
+      '<div class="modal-field"><div class="modal-field-label">取り組む作業</div><div class="modal-field-value">' + escapeHtml((d.step2 && d.step2.task) || "") + '</div></div>' +
+      '<div class="modal-field"><div class="modal-field-label">現状</div><div class="modal-field-value">' + escapeHtml((d.step2 && d.step2.current) || "") + '</div></div>' +
+      '<div class="modal-field"><div class="modal-field-label">何が大変か</div><div class="modal-field-value">' + escapeHtml((d.step2 && d.step2.difficulty) || "") + '</div></div>' +
+      '<div class="modal-field"><div class="modal-field-label">週の所要時間</div><div class="modal-field-value">' + escapeHtml((d.step2 && d.step2.minutes) || "") + ' 分/週</div></div>' +
+      '<div class="modal-field"><div class="modal-field-label">Claudeの使い方イメージ</div><div class="modal-field-value">' + escapeHtml((d.step2 && d.step2.claude) || "") + '</div></div>' +
+      '</div>';
+
+    // STEP 3
+    if (d.step3 && (d.step3.did || d.step3.automated)) {
+      html +=
+        '<div class="modal-section">' +
+        '<div class="modal-section-label">STEP 03 · 実践記録</div>' +
+        '<h3>実践してみた結果</h3>' +
+        '<div class="modal-field"><div class="modal-field-label">実際にやったこと</div><div class="modal-field-value">' + escapeHtml(d.step3.did || "") + '</div></div>' +
+        '<div class="modal-field"><div class="modal-field-label">自動化・ゼロ化できたか</div><div class="modal-field-value">' + escapeHtml(d.step3.automated || "") + '</div></div>' +
+        '<div class="modal-field"><div class="modal-field-label">うまくいったこと</div><div class="modal-field-value">' + escapeHtml(d.step3.success || "") + '</div></div>' +
+        '<div class="modal-field"><div class="modal-field-label">うまくいかなかったこと・課題</div><div class="modal-field-value">' + escapeHtml(d.step3.challenge || "") + '</div></div>' +
+        '<div class="modal-field"><div class="modal-field-label">生まれた時間</div><div class="modal-field-value">' + escapeHtml(d.step3.minutes || "") + ' 分/週</div></div>' +
+        '<div class="modal-field"><div class="modal-field-label">最重要課題に取り組めたか</div><div class="modal-field-value">' + escapeHtml(d.step3.priority || "") + '</div></div>' +
+        '<div class="modal-field"><div class="modal-field-label">次になくしたい作業</div><div class="modal-field-value">' + escapeHtml(d.step3.next || "") + '</div></div>' +
+        '</div>';
+    } else {
+      html += '<div style="text-align: center; padding: 24px; color: var(--ink-muted); background: var(--bg-tint); border-radius: 4px;">STEP 3 はまだ提出されていません</div>';
+    }
+
+    document.getElementById("modalBody").innerHTML = html;
+    document.getElementById("modal").classList.add("show");
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.remove("show");
+  }
+
+  // ============================================================
+  // CSV書き出し
+  // ============================================================
+  function exportCSV() {
+    if (allData.length === 0) { alert("データがありません"); return; }
+    const headers = [
+      "提出日時", "更新日時", "氏名", "メール", "所属",
+      "STEP0_最重要課題", "STEP0_理由", "STEP0_最初にやること",
+      "STEP1_作業数",
+      "STEP2_取り組む作業", "STEP2_現状", "STEP2_大変な点", "STEP2_週分", "STEP2_Claude使い方",
+      "STEP3_実施内容", "STEP3_自動化結果", "STEP3_成功", "STEP3_課題", "STEP3_削減分", "STEP3_最重要取組", "STEP3_次"
+    ];
+    const rows = allData.map(function(d) {
+      return [
+        d.submitted_at || "", d.updated_at || "", d.name || "", d.email || "", d.department || "",
+        (d.step0 && d.step0.task) || "", (d.step0 && d.step0.why) || "", (d.step0 && d.step0.first) || "",
+        (d.step1 || []).length,
+        (d.step2 && d.step2.task) || "", (d.step2 && d.step2.current) || "", (d.step2 && d.step2.difficulty) || "", (d.step2 && d.step2.minutes) || "", (d.step2 && d.step2.claude) || "",
+        (d.step3 && d.step3.did) || "", (d.step3 && d.step3.automated) || "", (d.step3 && d.step3.success) || "", (d.step3 && d.step3.challenge) || "", (d.step3 && d.step3.minutes) || "", (d.step3 && d.step3.priority) || "", (d.step3 && d.step3.next) || ""
+      ];
+    });
+    const csv = [headers].concat(rows).map(function(r) {
+      return r.map(function(c) { return '"' + String(c).replace(/"/g, '""').replace(/\r?\n/g, " ") + '"'; }).join(",");
+    }).join("\r\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "project-sheets-" + new Date().toISOString().slice(0,10) + ".csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ============================================================
+  // 初期化
+  // ============================================================
+  document.addEventListener("DOMContentLoaded", checkSession);
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeModal();
+  });
+</script>
+
+</body>
+</html>
