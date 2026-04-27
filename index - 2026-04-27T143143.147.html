@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マイ・プロジェクトシート | 第2回定例会 提出フォーム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F1;
+    --bg-tint: #F4EFE5;
+    --card: #FFFFFF;
+    --ink: #1F1B16;
+    --ink-soft: #4A443D;
+    --ink-muted: #8A8378;
+    --line: #E5DFD2;
+    --line-soft: #EDE7DA;
+    --accent: #8B3A1F;
+    --accent-soft: #B45C3D;
+    --accent-tint: #F2E4DA;
+    --gold: #B68A4E;
+    --green: #5C7A4F;
+    --warn: #B0593A;
+    --shadow: 0 1px 2px rgba(31, 27, 22, 0.04), 0 8px 24px rgba(31, 27, 22, 0.05);
+    --radius: 4px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(180, 92, 61, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(182, 138, 78, 0.04) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ===== Header ===== */
+  .masthead {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .masthead h1 {
+    font-family: "Shippori Mincho", serif;
+    font-weight: 600;
+    font-size: clamp(26px, 5vw, 34px);
+    margin: 0 0 8px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .masthead .subtitle {
+    font-family: "Shippori Mincho", serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+  .ornament {
+    width: 48px;
+    height: 1px;
+    background: var(--accent);
+    margin: 20px auto 0;
+    position: relative;
+  }
+  .ornament::before, .ornament::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    top: -1.5px;
+  }
+  .ornament::before { left: -8px; }
+  .ornament::after { right: -8px; }
+
+  /* ===== Schedule Banner ===== */
+  .schedule {
+    background: var(--bg-tint);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    font-size: 13px;
+  }
+  .schedule-title {
+    font-family: "Shippori Mincho", serif;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  @media (min-width: 600px) {
+    .schedule-grid { grid-template-columns: repeat(2, 1fr); gap: 8px 24px; }
+  }
+  .schedule-item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+  }
+  .schedule-date {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 12px;
+    white-space: nowrap;
+    min-width: 78px;
+  }
+  .schedule-task { color: var(--ink-soft); }
+
+  /* ===== Lookup Box ===== */
+  .lookup-box {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+  }
+  .lookup-title {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .lookup-flex {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .lookup-flex input {
+    flex: 1;
+    min-width: 200px;
+  }
+  .lookup-flex button {
+    padding: 10px 18px;
+    background: var(--bg-tint);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .lookup-flex button:hover { background: var(--accent-tint); border-color: var(--accent-soft); }
+
+  /* ===== Section ===== */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 36px 36px 32px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  @media (max-width: 600px) {
+    .section { padding: 28px 20px 24px; }
+  }
+
+  .step-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .step-label::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section h2 {
+    font-family: "Shippori Mincho", serif;
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 8px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .section .lead {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    margin: 0 0 28px;
+    line-height: 1.75;
+  }
+
+  /* ===== Form fields ===== */
+  .field { margin-bottom: 22px; }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 600px) {
+    .field-row { grid-template-columns: 1fr; gap: 18px; }
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .req::after {
+    content: "必須";
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    background: var(--accent);
+    color: white;
+    padding: 1px 6px;
+    border-radius: 2px;
+    margin-left: 8px;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+    font-weight: 500;
+  }
+  .hint {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+
+  input[type="text"], input[type="email"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 11px 14px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+    line-height: 1.7;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(139, 58, 31, 0.08);
+  }
+
+  /* ===== STEP 1 Table ===== */
+  .task-list { margin-top: 8px; }
+  .task-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 110px 80px 28px;
+    gap: 8px;
+    align-items: stretch;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 600px) {
+    .task-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 12px;
+      background: var(--bg-tint);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .task-row .task-num {
+      grid-column: 1;
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 11px;
+    }
+    .task-row .task-remove {
+      position: absolute;
+      top: 8px;
+      right: 40px;
+    }
+  }
+  .task-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .task-row input, .task-row select { padding: 9px 10px; font-size: 13px; }
+  .task-remove {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink-muted);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .task-remove:hover {
+    border-color: var(--warn);
+    color: var(--warn);
+    background: #fff;
+  }
+  .task-header {
+    display: grid;
+    grid-template-columns: 32px 1fr 110px 80px 28px;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+  }
+  @media (max-width: 600px) { .task-header { display: none; } }
+
+  .add-row-btn {
+    margin-top: 10px;
+    background: transparent;
+    color: var(--accent);
+    border: 1px dashed var(--accent-soft);
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    transition: all 0.15s;
+    width: 100%;
+  }
+  .add-row-btn:hover { background: var(--accent-tint); }
+
+  /* ===== STEP 3 special ===== */
+  .step3-section {
+    background: var(--bg-tint);
+    border-color: var(--line-soft);
+    position: relative;
+  }
+  .step3-section::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--accent-soft));
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .step3-banner {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Save / Submit ===== */
+  .actions {
+    margin-top: 32px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  @media (max-width: 600px) {
+    .actions { flex-direction: column-reverse; }
+    .actions button { width: 100%; }
+  }
+  button {
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: white;
+    border: 1px solid var(--ink);
+    padding: 13px 32px;
+    font-size: 14px;
+    border-radius: var(--radius);
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    padding: 13px 24px;
+    font-size: 14px;
+    border-radius: var(--radius);
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: var(--bg-tint); color: var(--ink); }
+
+  /* ===== Auto save indicator ===== */
+  .save-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 10px 16px;
+    border-radius: 24px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .save-indicator.show { opacity: 1; }
+  .save-indicator::before {
+    content: "✓";
+    color: var(--green);
+    margin-right: 6px;
+    font-weight: 600;
+  }
+
+  /* ===== Status messages ===== */
+  .status-msg {
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    display: none;
+  }
+  .status-msg.show { display: block; }
+  .status-msg.success {
+    background: #F0F4ED;
+    color: #3F5635;
+    border: 1px solid #C8D4BD;
+  }
+  .status-msg.error {
+    background: #FBEFEA;
+    color: #8B3A1F;
+    border: 1px solid #E8C2B0;
+  }
+  .status-msg.info {
+    background: var(--bg-tint);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+
+  /* ===== Loading ===== */
+  .loading {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: -2px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ===== Submission complete view ===== */
+  .complete-view {
+    text-align: center;
+    padding: 60px 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .complete-view .check {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent-tint);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 26px;
+  }
+  .complete-view h2 {
+    font-family: "Shippori Mincho", serif;
+    font-size: 24px;
+    margin: 0 0 12px;
+  }
+  .complete-view p { color: var(--ink-soft); }
+  .complete-view .id-display {
+    font-family: "JetBrains Mono", monospace;
+    background: var(--bg-tint);
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    display: inline-block;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--ink);
+    border: 1px dashed var(--line);
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="eyebrow">My Project Sheet · 2026</div>
+    <h1>マイ・プロジェクトシート</h1>
+    <p class="subtitle">作業ゼロへ。本来取り組むべき最重要課題に、時間を使う。</p>
+    <div class="ornament"></div>
+  </header>
+
+  <!-- Schedule -->
+  <div class="schedule">
+    <div class="schedule-title">提出スケジュール</div>
+    <div class="schedule-grid">
+      <div class="schedule-item"><span class="schedule-date">5/8 (金)</span><span class="schedule-task">STEP 0〜2 を提出</span></div>
+      <div class="schedule-item"><span class="schedule-date">5/8〜22</span><span class="schedule-task">Claudeで実践（2週間）</span></div>
+      <div class="schedule-item"><span class="schedule-date">5/22 (金)</span><span class="schedule-task">STEP 3（実践記録）を完了</span></div>
+      <div class="schedule-item"><span class="schedule-date">5/23 (土)</span><span class="schedule-task">第2回定例会で発表</span></div>
+    </div>
+  </div>
+
+  <!-- Lookup -->
+  <div class="lookup-box">
+    <div class="lookup-title">📝 既に提出済みの方は、メールアドレスを入力すると編集できます</div>
+    <div class="lookup-flex">
+      <input type="email" id="lookupEmail" placeholder="example@company.co.jp">
+      <button onclick="lookupSubmission()">提出データを呼び出す</button>
+    </div>
+  </div>
+
+  <!-- Form view -->
+  <div id="formView">
+
+    <div id="statusMsg" class="status-msg"></div>
+
+    <!-- Basic Info -->
+    <section class="section">
+      <div class="step-label">BASIC INFO</div>
+      <h2>基本情報</h2>
+      <p class="lead">提出者の情報を入力してください。メールアドレスは後日 STEP 3 を追加する際の照合に使用します。</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="req">氏名</label>
+          <input type="text" id="name" placeholder="山田 太郎">
+        </div>
+        <div class="field">
+          <label class="req">メールアドレス</label>
+          <input type="email" id="email" placeholder="example@company.co.jp">
+        </div>
+      </div>
+      <div class="field">
+        <label class="req">所属・役職</label>
+        <input type="text" id="department" placeholder="例：セイルインターナショナル / 受発注担当">
+      </div>
+    </section>
+
+    <!-- STEP 0 -->
+    <section class="section">
+      <div class="step-label">STEP 00</div>
+      <h2>あなたの「最重要課題」</h2>
+      <p class="lead">別添「最重要課題の見つけ方」を読んだ上で、自動化で生まれた時間を何に使うかを先に決めましょう。</p>
+
+      <div class="field">
+        <label class="req">あなたの最重要課題（本来取り組みたいこと）</label>
+        <span class="hint">第2領域（緊急ではないが重要）の中で、ずっと後回しにしてきたことを書いてください。</span>
+        <textarea id="step0_task" rows="3" placeholder="例：保守契約の更新時期を把握し、先手で顧客に案内できる仕組みをつくる"></textarea>
+      </div>
+      <div class="field">
+        <label class="req">なぜ今まで取り組めていないか</label>
+        <textarea id="step0_why" rows="3" placeholder="例：日々の問い合わせ対応に追われ、契約期限の確認まで手が回らない"></textarea>
+      </div>
+      <div class="field">
+        <label class="req">時間が生まれたら、まず何をするか</label>
+        <textarea id="step0_first" rows="3" placeholder="例：顧客リストを契約期限順に並び替え、3か月前から案内するフローを設計する"></textarea>
+      </div>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="section">
+      <div class="step-label">STEP 01</div>
+      <h2>自分の作業をすべて書き出す</h2>
+      <p class="lead">「繰り返している・時間がかかる・誰でもできる」と感じる作業を、思いつくだけ書き出してください。事務かどうかは気にしなくて結構です。まず全部出すことが大事です。</p>
+
+      <div class="task-header">
+        <div></div>
+        <div>作業の内容</div>
+        <div>頻度</div>
+        <div>自動化</div>
+        <div></div>
+      </div>
+      <div id="taskList" class="task-list"></div>
+      <button type="button" class="add-row-btn" onclick="addTaskRow()">＋ 作業を追加</button>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="section">
+      <div class="step-label">STEP 02</div>
+      <h2>「ゼロにする作業」を一つ選び、Claudeでの自動化を設計する</h2>
+      <p class="lead">STEP 1 で書き出した中から、まず取り組む作業を一つ決めて記入してください。</p>
+
+      <div class="field">
+        <label class="req">取り組む作業（一つ選ぶ）</label>
+        <textarea id="step2_task" rows="2" placeholder="例：毎週月曜の取引先別売上集計レポートの作成"></textarea>
+      </div>
+      <div class="field">
+        <label class="req">今はどうやっているか（現状）</label>
+        <textarea id="step2_current" rows="3" placeholder="例：基幹システムからCSVを5本ダウンロードし、Excelで手作業で結合・集計してメール送信している"></textarea>
+      </div>
+      <div class="field">
+        <label class="req">何が大変・時間がかかるか</label>
+        <textarea id="step2_difficulty" rows="3" placeholder="例：CSVの形式が毎回微妙に違い、列の並び替えに毎回30分以上かかる"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="req">週に何分かかっているか（目安）</label>
+          <input type="number" id="step2_minutes" placeholder="120" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label class="req">Claudeにやらせること・使い方のイメージ</label>
+        <span class="hint">具体的にどう頼むか、どんな出力を期待するかを書いてください。</span>
+        <textarea id="step2_claude" rows="4" placeholder="例：CSVファイルを添付して『取引先別の売上集計表を作って。前週比も出して』と頼む。出力をそのままメール本文にコピペして送信する流れにする。"></textarea>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="section step3-section">
+      <div class="step-label">STEP 03 · 実践パート</div>
+      <h2>実際にClaudeを使ってみた記録</h2>
+      <p class="lead">5月8日〜22日の実践期間に記入してください。うまくいかなくて結構です。「なくそうとした経緯・壁・発見」も大切な発表材料です。</p>
+
+      <div class="step3-banner">
+        💡 STEP 0〜2 を先に提出した方は、後日このページに戻って STEP 3 を追加できます。冒頭の「提出データを呼び出す」からメールアドレスで呼び出してください。
+      </div>
+
+      <div class="field">
+        <label>実際にやったこと</label>
+        <textarea id="step3_did" rows="3" placeholder="どんなプロンプトを試したか、どんなやり取りをしたか"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>自動化・ゼロ化できたか</label>
+          <select id="step3_automated">
+            <option value="">選択してください</option>
+            <option value="完全にゼロ化できた">完全にゼロ化できた</option>
+            <option value="一部できた">一部できた</option>
+            <option value="うまくいかなかった">うまくいかなかった</option>
+            <option value="まだ実践中">まだ実践中</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>生まれた時間（分/週）</label>
+          <input type="number" id="step3_minutes" placeholder="60" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label>うまくいったこと</label>
+        <textarea id="step3_success" rows="3" placeholder=""></textarea>
+      </div>
+      <div class="field">
+        <label>うまくいかなかったこと・課題</label>
+        <textarea id="step3_challenge" rows="3" placeholder=""></textarea>
+      </div>
+      <div class="field">
+        <label>生まれた時間で「最重要課題」に取り組めたか</label>
+        <textarea id="step3_priority" rows="3" placeholder="STEP 0 で書いた最重要課題に、実際に時間を使えたか"></textarea>
+      </div>
+      <div class="field">
+        <label>次になくしたい作業</label>
+        <textarea id="step3_next" rows="2" placeholder=""></textarea>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="btn-secondary" onclick="clearForm()">入力をクリア</button>
+      <button type="button" class="btn-primary" id="submitBtn" onclick="submitForm()">提出する</button>
+    </div>
+  </div>
+
+  <!-- Complete view -->
+  <div id="completeView" class="complete-view hidden">
+    <div class="check">✓</div>
+    <h2>ご提出ありがとうございました</h2>
+    <p>坂口美帆へ提出が完了しました。</p>
+    <div class="id-display" id="completeId"></div>
+    <p style="font-size: 13px; margin-top: 24px;">
+      STEP 3（実践記録）は5月22日（金）までに、このフォームから追加・編集できます。<br>
+      編集する際は、画面上部の「提出データを呼び出す」よりメールアドレスを入力してください。
+    </p>
+    <div style="margin-top: 32px;">
+      <button type="button" class="btn-secondary" onclick="location.reload()">もう一度フォームを表示</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>担当：坂口美帆 ／ 第2回定例会 2026年5月23日（土）</p>
+    <p style="margin-top: 4px;">不明な点があれば、いつでもご連絡ください。</p>
+  </footer>
+</div>
+
+<div class="save-indicator" id="saveIndicator">下書きを保存しました</div>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // ============================================================
+  // Supabase 設定（README の手順で取得した値に書き換えてください）
+  // ============================================================
+  const SUPABASE_URL      = "https://boyscvllvlecqscficxj.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJveXNjdmxsdmxlY3FzY2ZpY3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNTU5MTUsImV4cCI6MjA5MjgzMTkxNX0.xV5yY_N4MATVxte3FBxBxRCjB9A7-H2fJSBlbM3bkmY";
+
+  // Supabase クライアント初期化
+  const sb = (typeof supabase !== "undefined")
+    ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
+  // ============================================================
+  // STEP 1 - タスク行管理
+  // ============================================================
+  let taskRowCount = 0;
+
+  function addTaskRow(content, frequency, canAutomate) {
+    content = content || "";
+    frequency = frequency || "";
+    canAutomate = canAutomate || "";
+    taskRowCount++;
+    const id = taskRowCount;
+    const list = document.getElementById("taskList");
+    const row = document.createElement("div");
+    row.className = "task-row";
+    row.dataset.id = id;
+    row.innerHTML =
+      '<div class="task-num">' + id + '</div>' +
+      '<input type="text" class="task-content" placeholder="どんな作業をしているか" value="' + escapeHtml(content) + '">' +
+      '<select class="task-frequency">' +
+        '<option value="">頻度</option>' +
+        '<option value="毎日"' + (frequency==="毎日"?" selected":"") + '>毎日</option>' +
+        '<option value="週次"' + (frequency==="週次"?" selected":"") + '>週次</option>' +
+        '<option value="月次"' + (frequency==="月次"?" selected":"") + '>月次</option>' +
+        '<option value="不定期"' + (frequency==="不定期"?" selected":"") + '>不定期</option>' +
+      '</select>' +
+      '<select class="task-automate">' +
+        '<option value="">自動化</option>' +
+        '<option value="○"' + (canAutomate==="○"?" selected":"") + '>○ できそう</option>' +
+        '<option value="△"' + (canAutomate==="△"?" selected":"") + '>△ 一部</option>' +
+        '<option value="×"' + (canAutomate==="×"?" selected":"") + '>× 難しい</option>' +
+      '</select>' +
+      '<button type="button" class="task-remove" title="削除">×</button>';
+    list.appendChild(row);
+    row.querySelector(".task-remove").addEventListener("click", function() { removeTaskRow(this); });
+    renumberTasks();
+    bindAutoSave(row);
+  }
+
+  function removeTaskRow(btn) {
+    btn.closest(".task-row").remove();
+    renumberTasks();
+    autoSave();
+  }
+
+  function renumberTasks() {
+    document.querySelectorAll("#taskList .task-row").forEach(function(row, i) {
+      row.querySelector(".task-num").textContent = i + 1;
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // ============================================================
+  // フォーム値の取得・設定
+  // ============================================================
+  function getFormData() {
+    const tasks = [];
+    document.querySelectorAll("#taskList .task-row").forEach(function(row) {
+      const content = row.querySelector(".task-content").value.trim();
+      const frequency = row.querySelector(".task-frequency").value;
+      const canAutomate = row.querySelector(".task-automate").value;
+      if (content || frequency || canAutomate) {
+        tasks.push({ content: content, frequency: frequency, canAutomate: canAutomate });
+      }
+    });
+
+    return {
+      name: val("name"),
+      email: val("email"),
+      department: val("department"),
+      step0: {
+        task: val("step0_task"),
+        why: val("step0_why"),
+        first: val("step0_first")
+      },
+      step1: tasks,
+      step2: {
+        task: val("step2_task"),
+        current: val("step2_current"),
+        difficulty: val("step2_difficulty"),
+        minutes: val("step2_minutes"),
+        claude: val("step2_claude")
+      },
+      step3: {
+        did: val("step3_did"),
+        automated: val("step3_automated"),
+        success: val("step3_success"),
+        challenge: val("step3_challenge"),
+        minutes: val("step3_minutes"),
+        priority: val("step3_priority"),
+        next: val("step3_next")
+      }
+    };
+  }
+
+  function setFormData(data) {
+    if (!data) return;
+    setVal("name", data.name);
+    setVal("email", data.email);
+    setVal("department", data.department);
+    if (data.step0) {
+      setVal("step0_task", data.step0.task);
+      setVal("step0_why", data.step0.why);
+      setVal("step0_first", data.step0.first);
+    }
+    document.getElementById("taskList").innerHTML = "";
+    taskRowCount = 0;
+    if (data.step1 && data.step1.length) {
+      data.step1.forEach(function(t) { addTaskRow(t.content, t.frequency, t.canAutomate); });
+    } else {
+      for (let i = 0; i < 3; i++) addTaskRow();
+    }
+    if (data.step2) {
+      setVal("step2_task", data.step2.task);
+      setVal("step2_current", data.step2.current);
+      setVal("step2_difficulty", data.step2.difficulty);
+      setVal("step2_minutes", data.step2.minutes);
+      setVal("step2_claude", data.step2.claude);
+    }
+    if (data.step3) {
+      setVal("step3_did", data.step3.did);
+      setVal("step3_automated", data.step3.automated);
+      setVal("step3_success", data.step3.success);
+      setVal("step3_challenge", data.step3.challenge);
+      setVal("step3_minutes", data.step3.minutes);
+      setVal("step3_priority", data.step3.priority);
+      setVal("step3_next", data.step3.next);
+    }
+  }
+
+  function val(id) { return (document.getElementById(id).value || "").trim(); }
+  function setVal(id, v) {
+    const el = document.getElementById(id);
+    if (el && v != null) el.value = v;
+  }
+
+  // ============================================================
+  // バリデーション
+  // ============================================================
+  function validate(data) {
+    const errors = [];
+    if (!data.name) errors.push("氏名");
+    if (!data.email) errors.push("メールアドレス");
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.push("メールアドレスの形式");
+    if (!data.department) errors.push("所属・役職");
+    if (!data.step0.task) errors.push("STEP 0：最重要課題");
+    if (!data.step0.why) errors.push("STEP 0：取り組めていない理由");
+    if (!data.step0.first) errors.push("STEP 0：時間が生まれたら何をするか");
+    if (data.step1.length === 0) errors.push("STEP 1：作業を1つ以上記入");
+    if (!data.step2.task) errors.push("STEP 2：取り組む作業");
+    if (!data.step2.current) errors.push("STEP 2：現状");
+    if (!data.step2.difficulty) errors.push("STEP 2：何が大変か");
+    if (!data.step2.minutes) errors.push("STEP 2：週に何分");
+    if (!data.step2.claude) errors.push("STEP 2：Claudeの使い方");
+    return errors;
+  }
+
+  // ============================================================
+  // 自動保存（localStorage）
+  // ============================================================
+  let autoSaveTimer = null;
+  function autoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(function() {
+      try {
+        localStorage.setItem("projectSheetDraft", JSON.stringify(getFormData()));
+        showSaveIndicator();
+      } catch (e) {}
+    }, 800);
+  }
+
+  function showSaveIndicator() {
+    const ind = document.getElementById("saveIndicator");
+    ind.classList.add("show");
+    setTimeout(function() { ind.classList.remove("show"); }, 1500);
+  }
+
+  function loadDraft() {
+    try {
+      const saved = localStorage.getItem("projectSheetDraft");
+      if (saved) {
+        const data = JSON.parse(saved);
+        setFormData(data);
+        showStatus("info", "前回の入力内容を復元しました。");
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function clearForm() {
+    if (!confirm("入力内容をすべてクリアしますか？")) return;
+    localStorage.removeItem("projectSheetDraft");
+    location.reload();
+  }
+
+  function bindAutoSave(scope) {
+    const root = scope || document;
+    root.querySelectorAll("input, textarea, select").forEach(function(el) {
+      el.addEventListener("input", autoSave);
+      el.addEventListener("change", autoSave);
+    });
+  }
+
+  // ============================================================
+  // 既存データの呼び出し（Supabase RPC）
+  // ============================================================
+  async function lookupSubmission() {
+    const email = document.getElementById("lookupEmail").value.trim();
+    if (!email) { showStatus("error", "メールアドレスを入力してください。"); return; }
+    if (!sb || SUPABASE_URL.includes("YOUR_")) {
+      showStatus("error", "サーバーが未設定です。坂口美帆までご連絡ください。");
+      return;
+    }
+
+    showStatus("info", "データを呼び出しています...");
+    try {
+      const { data, error } = await sb.rpc("get_submission_by_email", { p_email: email });
+      if (error) throw error;
+      if (data && data.length > 0) {
+        setFormData(data[0]);
+        showStatus("success", data[0].name + " さんの提出データを呼び出しました。STEP 3 を追加・編集できます。");
+        autoSave();
+        const firstSection = document.querySelector(".section");
+        if (firstSection) {
+          window.scrollTo({ top: firstSection.offsetTop - 20, behavior: "smooth" });
+        }
+      } else {
+        showStatus("error", "そのメールアドレスでの提出データが見つかりません。");
+      }
+    } catch (err) {
+      showStatus("error", "通信エラーが発生しました：" + (err.message || err));
+    }
+  }
+
+  // ============================================================
+  // 提出（Supabase RPC）
+  // ============================================================
+  async function submitForm() {
+    const data = getFormData();
+    const errors = validate(data);
+    if (errors.length > 0) {
+      showStatus("error", "以下の項目を確認してください：" + errors.join(" / "));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    if (!sb || SUPABASE_URL.includes("YOUR_")) {
+      showStatus("error", "サーバーが未設定です。坂口美帆までご連絡ください。");
+      return;
+    }
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>送信中...';
+
+    try {
+      const { data: id, error } = await sb.rpc("submit_or_update_submission", { p_data: data });
+      if (error) throw error;
+
+      localStorage.removeItem("projectSheetDraft");
+      document.getElementById("formView").classList.add("hidden");
+      document.getElementById("completeView").classList.remove("hidden");
+      document.getElementById("completeId").textContent = "提出ID: " + (id || "-");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      showStatus("error", "提出に失敗しました：" + (err.message || err));
+      btn.disabled = false;
+      btn.textContent = "提出する";
+    }
+  }
+
+  function showStatus(type, msg) {
+    const el = document.getElementById("statusMsg");
+    el.className = "status-msg show " + type;
+    el.textContent = msg;
+    if (type === "info") setTimeout(function() { el.classList.remove("show"); }, 3000);
+  }
+
+  // ============================================================
+  // 初期化
+  // ============================================================
+  document.addEventListener("DOMContentLoaded", function() {
+    if (!loadDraft()) {
+      // 初期表示：作業行を3行用意
+      for (let i = 0; i < 3; i++) addTaskRow();
+    }
+    bindAutoSave(document);
+  });
+</script>
+
+</body>
+</html>
