@@ -210,16 +210,6 @@
     font-weight: 600;
     letter-spacing: 0.04em;
   }
-  .intro-step-arrow {
-    color: var(--ink-muted);
-    font-size: 16px;
-    align-self: center;
-    text-align: center;
-    margin: 0 -2px;
-  }
-  @media (max-width: 600px) {
-    .intro-step-arrow { display: none; }
-  }
   .intro-closing {
     margin-top: 28px;
     padding-top: 22px;
@@ -274,6 +264,64 @@
     min-width: 78px;
   }
   .schedule-task { color: var(--ink-soft); }
+
+  /* ===== Connection diagnostics (NEW) ===== */
+  .conn-diag {
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    line-height: 1.7;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid;
+  }
+  .conn-diag.checking {
+    background: #FFF9EE;
+    border-color: #E8D9A8;
+    color: #6B5417;
+  }
+  .conn-diag.ok {
+    background: #F0F4ED;
+    border-color: #C8D4BD;
+    color: #3F5635;
+  }
+  .conn-diag.ng {
+    background: #FBEFEA;
+    border-color: #E8C2B0;
+    color: #8B3A1F;
+  }
+  .conn-diag-icon {
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .conn-diag-body { flex: 1; }
+  .conn-diag-body strong { display: block; margin-bottom: 4px; font-size: 13.5px; }
+  .conn-diag-body pre {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 3px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+  .conn-diag-retry {
+    background: white;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .conn-diag-retry:hover { opacity: 0.8; }
 
   /* ===== Lookup Box ===== */
   .lookup-box {
@@ -599,6 +647,8 @@
     margin-bottom: 20px;
     font-size: 13.5px;
     display: none;
+    white-space: pre-wrap;
+    line-height: 1.7;
   }
   .status-msg.show { display: block; }
   .status-msg.success {
@@ -744,6 +794,15 @@
       <div class="schedule-item"><span class="schedule-date">5/8〜22</span><span class="schedule-task">Claudeで実践（2週間）</span></div>
       <div class="schedule-item"><span class="schedule-date">5/22 (金)</span><span class="schedule-task">STEP 3（実践記録）を完了</span></div>
       <div class="schedule-item"><span class="schedule-date">5/23 (土)</span><span class="schedule-task">第2回定例会で発表</span></div>
+    </div>
+  </div>
+
+  <!-- Connection diagnostics (NEW) -->
+  <div id="connDiag" class="conn-diag checking">
+    <div class="conn-diag-icon">⏳</div>
+    <div class="conn-diag-body">
+      <strong>サーバー接続を確認しています...</strong>
+      <span>提出先のサーバー(Supabase)に接続できるか確認中です。</span>
     </div>
   </div>
 
@@ -934,15 +993,141 @@
 
 <script>
   // ============================================================
-  // Supabase 設定（README の手順で取得した値に書き換えてください）
+  // Supabase 設定
   // ============================================================
   const SUPABASE_URL      = "https://boyscvllvlecqscficxj.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJveXNjdmxsdmxlY3FzY2ZpY3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNTU5MTUsImV4cCI6MjA5MjgzMTkxNX0.xV5yY_N4MATVxte3FBxBxRCjB9A7-H2fJSBlbM3bkmY";
 
-  // Supabase クライアント初期化
   const sb = (typeof supabase !== "undefined")
     ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     : null;
+
+  let connectionOK = false;
+
+  // ============================================================
+  // ★ 接続診断（新規追加）
+  // ============================================================
+  async function runConnectionCheck() {
+    const diag = document.getElementById("connDiag");
+    diag.className = "conn-diag checking";
+    diag.innerHTML =
+      '<div class="conn-diag-icon">⏳</div>' +
+      '<div class="conn-diag-body">' +
+        '<strong>サーバー接続を確認しています...</strong>' +
+        '<span>提出先のサーバー(Supabase)に接続できるか確認中です。</span>' +
+      '</div>';
+
+    if (!sb) {
+      showConnNG("Supabase SDK が読み込まれていません",
+        "ネットワーク接続を確認してページを再読み込みしてください。\nCDN(cdn.jsdelivr.net) がブロックされている可能性があります。");
+      return;
+    }
+
+    // 1. Supabaseプロジェクト自体が生きてるか
+    let projectAlive = false;
+    let projectErr = "";
+    try {
+      const res = await fetch(SUPABASE_URL + "/rest/v1/", {
+        method: "GET",
+        headers: { "apikey": SUPABASE_ANON_KEY }
+      });
+      projectAlive = true; // どんなステータスでも応答があれば生きてる
+      console.log("[Conn] Supabase project responding, status=" + res.status);
+    } catch (e) {
+      projectErr = e.message || String(e);
+      console.error("[Conn] Supabase project unreachable", e);
+    }
+
+    if (!projectAlive) {
+      showConnNG("Supabaseプロジェクトに接続できません",
+        "エラー詳細: " + projectErr + "\n\n" +
+        "👉 考えられる原因:\n" +
+        "  ① Supabaseプロジェクト「boyscvllvlecqscficxj」が一時停止(Paused)されている\n" +
+        "     ※ 無料プランは1週間アクセスがないと自動停止します\n" +
+        "  ② SUPABASE_URL の値が間違っている\n" +
+        "  ③ ネットワーク・ファイアウォールでブロックされている\n\n" +
+        "対処: https://supabase.com/dashboard を開き、該当プロジェクトが「Active」か確認。Pausedなら「Restore」ボタンを押して再起動。");
+      return;
+    }
+
+    // 2. RPC関数が存在するか軽くチェック（空のemailで叩いてみる）
+    try {
+      const { error } = await sb.rpc("get_submission_by_email", { p_email: "__connection_test__@example.com" });
+      if (error) {
+        const msg = (error.message || "").toLowerCase();
+        if (msg.includes("function") && (msg.includes("does not exist") || msg.includes("not found") || msg.includes("could not find"))) {
+          showConnNG("データベースの関数が未作成です",
+            "Supabaseは生きていますが、必要な関数 get_submission_by_email / submit_or_update_submission がまだ作られていません。\n\n" +
+            "エラー詳細: " + error.message + "\n\n" +
+            "👉 対処: SupabaseのSQL Editorで、関数を作成するSQLを実行してください。(セットアップ手順を確認)");
+          return;
+        }
+        // 関数は存在するが、その他のエラー(空入力で正常な"見つからない"応答など)
+        console.log("[Conn] RPC test responded with non-fatal error:", error);
+      }
+      // ここまで来たら正常
+      showConnOK();
+    } catch (e) {
+      // fetch自体が失敗した場合
+      const emsg = e.message || String(e);
+      if (emsg.includes("Failed to fetch")) {
+        showConnNG("通信エラー",
+          "Supabaseに通信できませんでした。\nエラー詳細: " + emsg + "\n\n" +
+          "👉 もう一度時間を置いて試すか、坂口美帆までご連絡ください。");
+      } else {
+        showConnNG("接続テストでエラーが発生しました",
+          "エラー詳細: " + emsg);
+      }
+    }
+  }
+
+  function showConnOK() {
+    connectionOK = true;
+    const diag = document.getElementById("connDiag");
+    diag.className = "conn-diag ok";
+    diag.innerHTML =
+      '<div class="conn-diag-icon">✓</div>' +
+      '<div class="conn-diag-body">' +
+        '<strong>サーバー接続OK</strong>' +
+        '<span>提出の準備ができました。フォームに記入して送信できます。</span>' +
+      '</div>';
+  }
+
+  function showConnNG(title, detail) {
+    connectionOK = false;
+    const diag = document.getElementById("connDiag");
+    diag.className = "conn-diag ng";
+    diag.innerHTML =
+      '<div class="conn-diag-icon">⚠</div>' +
+      '<div class="conn-diag-body">' +
+        '<strong>' + escapeHtml(title) + '</strong>' +
+        '<pre>' + escapeHtml(detail) + '</pre>' +
+        '<button type="button" class="conn-diag-retry" onclick="runConnectionCheck()">再テスト</button>' +
+      '</div>';
+  }
+
+  // ============================================================
+  // エラーメッセージから原因のヒントを生成
+  // ============================================================
+  function getErrorHint(rawMsg) {
+    const msg = String(rawMsg || "").toLowerCase();
+    if (msg.includes("failed to fetch") || msg.includes("networkerror") || msg.includes("network error")) {
+      return "\n\n👉 原因の可能性: Supabaseプロジェクトが一時停止/停止しているか、ネットワークに繋がっていません。\n   画面上部の接続診断で「再テスト」を押すか、しばらく待って再試行してください。";
+    }
+    if (msg.includes("does not exist") || msg.includes("could not find") || msg.includes("not found")) {
+      return "\n\n👉 原因の可能性: データベース側の関数またはテーブルが未作成です。坂口美帆までご連絡ください。";
+    }
+    if (msg.includes("permission") || msg.includes("rls") || msg.includes("policy")) {
+      return "\n\n👉 原因の可能性: Row Level Security でブロックされています(anon ロールに権限なし)。";
+    }
+    if (msg.includes("jwt") || msg.includes("invalid api key") || msg.includes("unauthorized")) {
+      return "\n\n👉 原因の可能性: APIキーが無効/期限切れです。";
+    }
+    if (msg.includes("duplicate") || msg.includes("unique")) {
+      return "\n\n👉 原因の可能性: 同じデータが既に登録されています。";
+    }
+    return "";
+  }
 
   // ============================================================
   // STEP 1 - タスク行管理
@@ -1155,13 +1340,18 @@
   }
 
   // ============================================================
-  // 既存データの呼び出し（Supabase RPC）
+  // 既存データの呼び出し
   // ============================================================
   async function lookupSubmission() {
     const email = document.getElementById("lookupEmail").value.trim();
     if (!email) { showStatus("error", "メールアドレスを入力してください。"); return; }
-    if (!sb || SUPABASE_URL.includes("YOUR_")) {
-      showStatus("error", "サーバーが未設定です。坂口美帆までご連絡ください。");
+    if (!sb) {
+      showStatus("error", "Supabaseクライアントが初期化されていません。ページを再読み込みしてください。");
+      return;
+    }
+    if (!connectionOK) {
+      showStatus("error", "サーバーに接続できていません。画面上部の「再テスト」ボタンを押して接続を確認してください。");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -1181,12 +1371,14 @@
         showStatus("error", "そのメールアドレスでの提出データが見つかりません。");
       }
     } catch (err) {
-      showStatus("error", "通信エラーが発生しました：" + (err.message || err));
+      console.error("[LOOKUP ERROR]", err);
+      const msg = err.message || String(err);
+      showStatus("error", "通信エラー: " + msg + getErrorHint(msg));
     }
   }
 
   // ============================================================
-  // 提出（Supabase RPC）
+  // 提出
   // ============================================================
   async function submitForm() {
     const data = getFormData();
@@ -1197,8 +1389,14 @@
       return;
     }
 
-    if (!sb || SUPABASE_URL.includes("YOUR_")) {
-      showStatus("error", "サーバーが未設定です。坂口美帆までご連絡ください。");
+    if (!sb) {
+      showStatus("error", "Supabaseクライアントが初期化されていません。ページを再読み込みしてください。");
+      return;
+    }
+
+    if (!connectionOK) {
+      showStatus("error", "サーバーに接続できていません。画面上部の「再テスト」ボタンで状態を確認してください。\n接続が復活するまで送信できません。");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -1216,9 +1414,12 @@
       document.getElementById("completeId").textContent = "提出ID: " + (id || "-");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      showStatus("error", "提出に失敗しました：" + (err.message || err));
+      console.error("[SUBMIT ERROR]", err);
+      const msg = err.message || String(err);
+      showStatus("error", "提出に失敗しました: " + msg + getErrorHint(msg));
       btn.disabled = false;
       btn.textContent = "提出する";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
@@ -1234,10 +1435,11 @@
   // ============================================================
   document.addEventListener("DOMContentLoaded", function() {
     if (!loadDraft()) {
-      // 初期表示：作業行を3行用意
       for (let i = 0; i < 3; i++) addTaskRow();
     }
     bindAutoSave(document);
+    // ★ 起動時に接続診断を実行
+    runConnectionCheck();
   });
 </script>
 
